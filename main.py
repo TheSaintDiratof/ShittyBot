@@ -1,22 +1,19 @@
 import discord
-from discord.ext import commands
+#from discord.ext import commands
 from config import settings
 import json
 import requests
 #class discord.Client(*, loop=None, **options)
-bot = commands.Bot(command_prefix='!')
+bot = discord.Client()#client = discord.Client()
+#bot = commands.Bot(command_prefix='!')
 print(discord.version_info)
 print(settings)
-@bot.command() # Не передаём аргумент pass_context, так как он был нужен в старых версиях.
-async def hello(ctx): # Создаём функцию и передаём аргумент ctx.
-    author = ctx.message.author # Объявляем переменную author и записываем туда информацию об авторе.
-    await ctx.send(f'Hello, {author.mention}!') # Выводим сообщение с упоминанием автора, обращаясь к переменной author.
-
 @bot.event
 async def on_message(message):
     channel = message.channel
     s = str(str(channel) + ' ' + str(message.author) + ' ' + str(message.content) + '\n')
     print(s)
+    print(message.embeds)
     f = open('log.txt', 'a')
     f.write(s)
     f.close()
@@ -64,9 +61,16 @@ async def on_message(message):
         else:
             pass
             await channel.send('''Команды:
+rndmFact - прислать случайный факт
 rndmPctr - прислать случайную картинку
 bot - обратиться к боту
 чтобы узнать подробнее надо набрать '<команда> help'
 пока что их всего две
 This bot was made by ♂TheSaintDiratof♂''')
+@bot.event
+async def on_ready():
+    print('Logged in as')
+    print(bot.user.name)
+    print(bot.user.id)
+    print('------')
 bot.run(settings['token']) # Обращаемся к словарю settings с ключом token, для получения токена
